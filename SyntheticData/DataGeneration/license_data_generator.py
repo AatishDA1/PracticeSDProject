@@ -527,3 +527,55 @@ class Validate:
         df = Validate.validate_address(df, "Address")
         return df
     
+class Stats:
+    """This is a class containing functions to describe the previously generated license data."""
+    @staticmethod
+    def is_corrupt(df):
+        """ Function that checks a dataset to see if it contains any corruption"""
+        # List columns that have 'Corruption' in their name.
+        corruption_columns = [col for col in df.columns if 'Corruption' in col]
+
+        # Iterate through the corruption status columns to check for any '1's.
+        for col in corruption_columns:
+            if 1 in df[col].values:
+                return 1  # If any '1' is found, return True indicating corruption.
+        
+        return 0  # If no '1' is found in any column, return False indicating no corruption.
+    
+    @staticmethod
+    def corrupt_percent(df):
+        """ Function that checks a dataset to see what percentage of rows contain corruption."""
+        # List columns that have 'Corruption' in their name.
+        corruption_columns = [col for col in df.columns if 'Corruption' in col]
+    
+        # Count total corrupt cells.
+        total_corrupt_cells = df[corruption_columns].sum().sum()
+
+        # Calculate the total number of cells in the DataFrame
+        total_cells = df.shape[0] * df.shape[1]
+
+        # Calculate corrupt percentage based on total corrupt cells over total cells
+        corrupt_percentage = (total_corrupt_cells / total_cells)
+
+        return corrupt_percentage
+        
+    @staticmethod
+    def attribute_corruption(df):
+        """ Function that returns which attributes in a dataset contain corruption or dont."""
+        # Find columns that have 'corruption' in their name
+        corruption_columns = [col for col in df.columns if 'Corruption' in col]
+
+        # Dictionary to store attribute-wise corruption status
+        attribute_corruption = {}
+
+        # Check each attribute column for corruption.
+        for col in corruption_columns:
+            attribute = col.replace(' Corruption', '')  # Remove 'corruption' from column name.
+            # Check if any corruption exists in the attribute column.
+            if 1 in df[col].values:
+                attribute_corruption[attribute] = 1  # Corruption exists in this attribute.
+            else:
+                attribute_corruption[attribute] = 0  # No corruption in this attribute.
+        
+        return attribute_corruption
+
