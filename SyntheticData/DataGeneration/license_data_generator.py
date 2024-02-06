@@ -102,7 +102,7 @@ Driver Number, Address and Gender."""
 
     @staticmethod
     def address():
-        """ Function to generate a synthetic UK address. """
+        """ Function to generate a synthetic address. """
         # Generate each of the 3 address components.
         street_address = str(random.randint(1, 999)) + " " + fake.street_name()
         city = fake.city()
